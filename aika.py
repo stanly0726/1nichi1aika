@@ -79,7 +79,8 @@ def line():
 @app.route('/radio')
 def radio():
 	env=os.environ
-	my_data = {'idpwLgid': env.get('email'),  'idpwLgpw': env.get('pw'), 'mode': 'LOGIN'}	r = requests.post("https://kobayashiaika.jp/s/n85/login",data=my_data)
+	my_data = {'idpwLgid': env.get('email'),  'idpwLgpw': env.get('pw'), 'mode': 'LOGIN'}
+	r = requests.post("https://kobayashiaika.jp/s/n85/login",data=my_data)
 	r2 = requests.get('https://kobayashiaika.jp/s/n85/diary/fc_radioand/list', cookies=r.cookies)
 
 	soup = BeautifulSoup(r2.text, 'html.parser')
