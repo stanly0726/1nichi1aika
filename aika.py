@@ -46,14 +46,18 @@ def hello_world():
 
 
 	if image_or_movie == 'image':
-		telegram_param_photo = {'chat_id': '1024110161', 'photo': image}
 		requests.post('https://notify-api.line.me/api/notify', headers = header, data = {'message': '\n'+date+'\n'+content,'imageFullsize':image, 'imageThumbnail':image})
+
+		image = image.replace('https', 'http')
+		telegram_param_photo = {'chat_id': '1024110161', 'photo': image}
 		requests.post('https://api.telegram.org/' + env.get('telegram_bot_token') + '/sendPhoto', params = telegram_param_photo)
 		#client.sendRemoteFiles(image, message=None, thread_id=100003783918607, thread_type=ThreadType.USER)
 	elif image_or_movie == 'movie':
-		telegram_param_video = {'chat_id': '1024110161', 'video': image}
 		requests.post('https://notify-api.line.me/api/notify', headers = header, data = {'message': date+'\n'+content})
 		requests.post('https://notify-api.line.me/api/notify', headers = header, data = {'message':image})
+
+		image = image.replace('https', 'http')
+		telegram_param_video = {'chat_id': '1024110161', 'video': image}
 		requests.post('https://api.telegram.org/' + env.get('telegram_bot_token') + '/sendVideo', params = telegram_param_video)
 		#client.send(Message(text=image), thread_id=100003783918607, thread_type=ThreadType.USER)
 
@@ -99,6 +103,7 @@ def radio():
 	requests.post('https://notify-api.line.me/api/notify', headers = header, data = {'message': '\n'+name})
 	requests.post('https://notify-api.line.me/api/notify', headers = header, data = {'message': '\n'+message})
 
+	message = message.replace('https', 'http')
 	telegram_param = {'chat_id': '1024110161', 'text': name}
 	telegram_param_video = {'chat_id': '1024110161', 'video': message}
 	requests.post('https://api.telegram.org/' + env.get('telegram_bot_token') + '/sendMessage', params = telegram_param)
