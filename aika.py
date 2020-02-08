@@ -1,0 +1,97 @@
+import os
+import requests
+from bs4 import BeautifulSoup
+from flask import Flask
+import json
+
+app = Flask(__name__)
+@app.route('/')
+def hello_world():
+	env=os.environ
+	my_data = {'idpwLgid': env.get('email'),  'idpwLgpw': env.get('pw'), 'mode': 'LOGIN'}
+	r = requests.post("https://kobayashiaika.jp/s/n85/login",data=my_data)
+	r2 = requests.get('https://kobayashiaika.jp/s/n85/lot/top_uranai', cookies=r.cookies)
+	r3 = requests.get('https://kobayashiaika.jp/s/n85/diary/fc_1nichi1aika/list', cookies=r.cookies)
+
+	soup_uranai = BeautifulSoup(r2.text, 'html.parser')
+	soup = BeautifulSoup(r3.text, 'html.parser')
+
+	date = soup.find("div",class_="textBox").find_all('p')[0].string.replace(' ','').replace('\n','')
+
+	content = soup.find("div",class_="textBox").find_all('p')[1].string.replace(' ','').replace('\n','')
+
+	image_or_movie = soup.find("li",class_="item").find_all('div')[1].get('class')[0]
+
+	if image_or_movie == 'image':
+		image = str(soup.find("li",class_="item").find('div',class_='image').img).replace('<img src="','https://kobayashiaika.jp').replace('"/>','')
+	elif image_or_movie == 'movie':
+		account = soup.find("li",class_="item").find('video')['data-account']
+		vid = soup.find("li",class_="item").find('video')['data-video-id']
+		header = {'Accept': 'application/json;pk=BCpkADawqM3T47dRzTl5mbQrsSen6Irw0V0_IJkbfWomd5pq9d-QFF9qEEqIx8riJ1F93W8T74JPmcI3J_Mb1vRFbx3kjvIVhoJnjaSu9J3z7FhaSSgoChrjoZu63Wf_q3j4XfYoi5dJOZKr'}
+		j = json.loads(requests.get('https://edge.api.brightcove.com/playback/v1/accounts/'+account+'/videos/'+vid, headers=header).text)
+		image = j['sources'][5]['src']
+	point = soup_uranai.find('p', class_='point').string.replace('！\n', '')
+
+	uranai_gif = str(soup_uranai.find('p', class_='image').img).replace('<img src="','https://kobayashiaika.jp').replace('"/>','')
+
+	header = {'Authorization': env.get('line_notify_bearer')}
+
+	requests.post('https://notify-api.line.me/api/notify', headers = header, data = {'message': point})
+
+	#client.sendRemoteFiles(uranai_gif, message=None, thread_id=100003783918607, thread_type=ThreadType.USER)
+	#requests.post('https://notify-api.line.me/api/notify', headers = header, data = {'message': date+'\n'+content})
+
+	if image_or_movie == 'image':
+		requests.post('https://notify-api.line.me/api/notify', headers = header, data = {'message': '\n'+date+'\n'+content,'imageFullsize':image, 'imageThumbnail':image})
+		#client.sendRemoteFiles(image, message=None, thread_id=100003783918607, thread_type=ThreadType.USER)
+	elif image_or_movie == 'movie':
+		requests.post('https://notify-api.line.me/api/notify', headers = header, data = {'message': date+'\n'+content})
+		requests.post('https://notify-api.line.me/api/notify', headers = header, data = {'message':image})
+		#client.send(Message(text=image), thread_id=100003783918607, thread_type=ThreadType.USER)
+
+	return date+'\n'+content+'\n'+image
+
+@app.route('/line')
+def line():
+	env=os.environ
+	my_data = {'idpwLgid': env.get('email'),  'idpwLgpw': env.get('pw'), 'mode': 'LOGIN'}
+	r = requests.post("https://kobayashiaika.jp/s/n85/login",data=my_data)
+	r2 = requests.get('https://kobayashiaika.jp/s/n85/diary/fc_1nichi1aika/list', cookies=r.cookies)
+
+	soup = BeautifulSoup(r2.text, 'html.parser')
+
+	date = soup.find("div",class_="textBox").find_all('p')[0].string.replace(' ','').replace('\n','')
+
+	content = soup.find("div",class_="textBox").find_all('p')[1].string.replace(' ','').replace('\n','')
+
+	image = str(soup.find("li",class_="item").find('div',class_='image').img).replace('<img src="','https://kobayashiaika.jp').replace('"/>','')
+
+	return date+'\n'+content+'\n'+image
+
+@app.route('/radio')
+def radio():
+	env=os.environ
+	my_data = {'idpwLgid': env.get('email'),  'idpwLgpw': env.get('pw'), 'mode': 'LOGIN'}	r = requests.post("https://kobayashiaika.jp/s/n85/login",data=my_data)
+	r2 = requests.get('https://kobayashiaika.jp/s/n85/diary/fc_radioand/list', cookies=r.cookies)
+
+	soup = BeautifulSoup(r2.text, 'html.parser')
+	object_ = soup.find('ul', class_='radioList').find_all('li')[0]
+	account = object_.find('video')['data-account']
+	vid = object_.find('video')['data-video-id']
+	name = object_.find_all('div')[1].p.string.replace(' ','').replace('\n', '') + ' ' + object_.find_all('div')[1].find_all('p')[1].string.replace(' ','').replace('\n', '')
+	header = {'Accept': 'application/json;pk=BCpkADawqM3T47dRzTl5mbQrsSen6Irw0V0_IJkbfWomd5pq9d-QFF9qEEqIx8riJ1F93W8T74JPmcI3J_Mb1vRFbx3kjvIVhoJnjaSu9J3z7FhaSSgoChrjoZu63Wf_q3j4XfYoi5dJOZKr'}
+	j = json.loads(requests.get('https://edge.api.brightcove.com/playback/v1/accounts/'+account+'/videos/'+vid, headers=header).text)
+	if len(j['sources']) == 8:
+		message = j['sources'][2]['src']
+	elif len(j['sources']) == 2:
+		message = j['sources'][1]['src']
+
+	header = {'Authorization': env.get('line_notify_bearer')}
+	requests.post('https://notify-api.line.me/api/notify', headers = header, data = {'message': '\n'+name})
+	requests.post('https://notify-api.line.me/api/notify', headers = header, data = {'message': '\n'+message})
+
+	return name+'\n'+message
+if __name__ == '__main__':
+#Bind to PORT if defined, otherwise default to 5000.
+	port = int(os.environ.get('PORT', 5000))
+	app.run(host='0.0.0.0', port=port)
