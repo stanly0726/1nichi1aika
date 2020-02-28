@@ -9,9 +9,9 @@ app = Flask(__name__)
 def hello_world():
 	env=os.environ
 	my_data = {'idpwLgid': env.get('email'),  'idpwLgpw': env.get('pw'), 'mode': 'LOGIN'}
-	r = requests.post("https://kobayashiaika.jp/s/n85/login",data=my_data)
-	r2 = requests.get('https://kobayashiaika.jp/s/n85/lot/top_uranai', cookies=r.cookies)
-	r3 = requests.get('https://kobayashiaika.jp/s/n85/diary/fc_1nichi1aika/list', cookies=r.cookies)
+	r = requests.post("https://fc.kobayashiaika.jp/s/n85/login",data=my_data)
+	r2 = requests.get('https://fc.kobayashiaika.jp/s/n85/lot/top_uranai', cookies=r.cookies)
+	r3 = requests.get('https://fc.kobayashiaika.jp/s/n85/diary/fc_1nichi1aika/list', cookies=r.cookies)
 
 	soup_uranai = BeautifulSoup(r2.text, 'html.parser')
 	soup = BeautifulSoup(r3.text, 'html.parser')
@@ -23,7 +23,7 @@ def hello_world():
 	image_or_movie = soup.find("li",class_="item").find_all('div')[1].get('class')[0]
 
 	if image_or_movie == 'image':
-		image = str(soup.find("li",class_="item").find('div',class_='image').img).replace('<img src="','https://kobayashiaika.jp').replace('"/>','')
+		image = str(soup.find("li",class_="item").find('div',class_='image').img).replace('<img src="','https://fc.kobayashiaika.jp').replace('"/>','')
 	elif image_or_movie == 'movie':
 		account = soup.find("li",class_="item").find('video')['data-account']
 		vid = soup.find("li",class_="item").find('video')['data-video-id']
@@ -32,7 +32,7 @@ def hello_world():
 		image = j['sources'][5]['src']
 	point = soup_uranai.find('p', class_='point').string.replace('！\n', '')
 
-	uranai_gif = str(soup_uranai.find('p', class_='image').img).replace('<img src="','https://kobayashiaika.jp').replace('"/>','')
+	uranai_gif = str(soup_uranai.find('p', class_='image').img).replace('<img src="','https://fc.kobayashiaika.jp').replace('"/>','')
 
 	header = {'Authorization': env.get('line_notify_bearer')}
 	telegram_param_point = {'chat_id': '1024110161', 'text': point}
@@ -67,8 +67,8 @@ def hello_world():
 def line():
 	env=os.environ
 	my_data = {'idpwLgid': env.get('email'),  'idpwLgpw': env.get('pw'), 'mode': 'LOGIN'}
-	r = requests.post("https://kobayashiaika.jp/s/n85/login",data=my_data)
-	r2 = requests.get('https://kobayashiaika.jp/s/n85/diary/fc_1nichi1aika/list', cookies=r.cookies)
+	r = requests.post("https://fc.kobayashiaika.jp/s/n85/login",data=my_data)
+	r2 = requests.get('https://fc.kobayashiaika.jp/s/n85/diary/fc_1nichi1aika/list', cookies=r.cookies)
 
 	soup = BeautifulSoup(r2.text, 'html.parser')
 
@@ -76,7 +76,7 @@ def line():
 
 	content = soup.find("div",class_="textBox").find_all('p')[1].string.replace(' ','').replace('\n','')
 
-	image = str(soup.find("li",class_="item").find('div',class_='image').img).replace('<img src="','https://kobayashiaika.jp').replace('"/>','')
+	image = str(soup.find("li",class_="item").find('div',class_='image').img).replace('<img src="','https://fc.kobayashiaika.jp').replace('"/>','')
 
 	return date+'\n'+content+'\n'+image
 
@@ -84,8 +84,8 @@ def line():
 def radio():
 	env=os.environ
 	my_data = {'idpwLgid': env.get('email'),  'idpwLgpw': env.get('pw'), 'mode': 'LOGIN'}
-	r = requests.post("https://kobayashiaika.jp/s/n85/login",data=my_data)
-	r2 = requests.get('https://kobayashiaika.jp/s/n85/diary/fc_radioand/list', cookies=r.cookies)
+	r = requests.post("https://fc.kobayashiaika.jp/s/n85/login",data=my_data)
+	r2 = requests.get('https://fc.kobayashiaika.jp/s/n85/diary/fc_radioand/list', cookies=r.cookies)
 
 	soup = BeautifulSoup(r2.text, 'html.parser')
 	object_ = soup.find('ul', class_='radioList').find_all('li')[0]
