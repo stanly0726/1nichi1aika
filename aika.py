@@ -1,11 +1,9 @@
 import os
 import requests
 from bs4 import BeautifulSoup
-from flask import Flask
+from flask import Flask, request
 import json
 
-app = Flask(__name__)
-@app.route('/')
 def hello_world():
 	env=os.environ
 	my_data = {'idpwLgid': env.get('email'),  'idpwLgpw': env.get('pw'), 'mode': 'LOGIN'}
@@ -63,24 +61,6 @@ def hello_world():
 
 	return date+'\n'+content+'\n'+image
 
-@app.route('/line')
-def line():
-	env=os.environ
-	my_data = {'idpwLgid': env.get('email'),  'idpwLgpw': env.get('pw'), 'mode': 'LOGIN'}
-	r = requests.post("https://fc.kobayashiaika.jp/s/n85/login",data=my_data)
-	r2 = requests.get('https://fc.kobayashiaika.jp/s/n85/diary/fc_1nichi1aika/list', cookies=r.cookies)
-
-	soup = BeautifulSoup(r2.text, 'html.parser')
-
-	date = soup.find("div",class_="textBox").find_all('p')[0].string.replace(' ','').replace('\n','')
-
-	content = soup.find("div",class_="textBox").find_all('p')[1].string.replace(' ','').replace('\n','')
-
-	image = str(soup.find("li",class_="item").find('div',class_='image').img).replace('<img src="','https://fc.kobayashiaika.jp').replace('"/>','')
-
-	return date+'\n'+content+'\n'+image
-
-@app.route('/radio')
 def radio():
 	env=os.environ
 	my_data = {'idpwLgid': env.get('email'),  'idpwLgpw': env.get('pw'), 'mode': 'LOGIN'}
@@ -110,6 +90,36 @@ def radio():
 	requests.post('https://api.telegram.org/' + env.get('telegram_bot_token') + '/sendVideo', params = telegram_param_video)
 
 	return name+'\n'+message
+
+app = Flask(__name__)
+
+@app.route('/')
+def twitter():
+	tweet = request.args.get("tweet")
+	if "『1日1愛香』更新いたしました！" in tweet:
+		hello_world()
+	elif "RADIO AND 更新！" in tweet:
+		radio()
+
+@app.route('/line')
+def line():
+	env=os.environ
+	my_data = {'idpwLgid': env.get('email'),  'idpwLgpw': env.get('pw'), 'mode': 'LOGIN'}
+	r = requests.post("https://fc.kobayashiaika.jp/s/n85/login",data=my_data)
+	r2 = requests.get('https://fc.kobayashiaika.jp/s/n85/diary/fc_1nichi1aika/list', cookies=r.cookies)
+
+	soup = BeautifulSoup(r2.text, 'html.parser')
+
+	date = soup.find("div",class_="textBox").find_all('p')[0].string.replace(' ','').replace('\n','')
+
+	content = soup.find("div",class_="textBox").find_all('p')[1].string.replace(' ','').replace('\n','')
+
+	image = str(soup.find("li",class_="item").find('div',class_='image').img).replace('<img src="','https://fc.kobayashiaika.jp').replace('"/>','')
+
+	return date+'\n'+content+'\n'+image
+
+#@app.route('/radio')
+
 
 if __name__ == '__main__':
 #Bind to PORT if defined, otherwise default to 5000.
