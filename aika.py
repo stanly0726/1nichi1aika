@@ -16,7 +16,7 @@ def hello_world():
 
 	date = soup.find("div",class_="textBox").find_all('p')[0].string.replace(' ','').replace('\n','')
 
-	content = soup.find("div",class_="textBox").find_all('p')[1].string.replace(' ','').replace('\n','')
+	content = soup.find("div",class_="textBox").find_all('p')[1].text.replace(' ','')#.replace('\n','')
 
 	image_or_movie = soup.find("li",class_="item").find_all('div')[1].get('class')[0]
 
@@ -97,9 +97,9 @@ app = Flask(__name__)
 def twitter():
 	tweet = request.args.get("tweet")
 	if "『1日1愛香』更新いたしました！" in tweet:
-		hello_world()
+		return hello_world()
 	elif "RADIO AND 更新！" in tweet:
-		radio()
+		return radio()
 
 @app.route('/line')
 def line():
