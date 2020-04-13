@@ -97,9 +97,9 @@ app = Flask(__name__)
 def twitter():
 	tweet = request.args.get("tweet")
 	if "『1日1愛香』更新いたしました！" in tweet:
-		return hello_world()
+		hello_world()
 	elif "RADIO AND 更新！" in tweet:
-		return radio()
+		radio()
 
 @app.route('/line')
 def line():
