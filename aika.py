@@ -90,7 +90,7 @@ def radio():
 	print(sendVideo)
 	print(sendVideo.content)
 	print(json.loads(sendVideo.content))
-	if json.loads(sendVideo.content)['ok'] == 'false':
+	if json.loads(sendVideo.content)['ok'] == 'False':
 		print('false')
 		file = requests.get(message)
 		open('./video.mp4','wb').write(file.content)
