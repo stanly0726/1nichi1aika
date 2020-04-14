@@ -78,8 +78,6 @@ def radio():
 		message = j['sources'][2]['src']
 	elif len(j['sources']) == 2:
 		message = j['sources'][1]['src']
-	file = requests.get(message)
-	open('/video.mp4',' wb').write(file.content)
 	header = {'Authorization': env.get('line_notify_bearer')}
 	requests.post('https://notify-api.line.me/api/notify', headers = header, data = {'message': '\n'+name})
 	requests.post('https://notify-api.line.me/api/notify', headers = header, data = {'message': '\n'+message})
@@ -90,6 +88,8 @@ def radio():
 	requests.post('https://api.telegram.org/' + env.get('telegram_bot_token') + '/sendMessage', params = telegram_param)
 	sendVideo = requests.post('https://api.telegram.org/' + env.get('telegram_bot_token') + '/sendVideo', params = telegram_param_video)
 	if sendVideo.content['ok'] == 'false':
+		file = requests.get(message)
+		open('/video.mp4','wb').write(file.content)
 		requests.post('https://api.telegram.org/' + env.get('telegram_bot_token') + '/sendMessage', params = {'chat_id': '1024110161', 'video': open('/video.mp4', 'rb')})
 	return name+'\n'+message
 
