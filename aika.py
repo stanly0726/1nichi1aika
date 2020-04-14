@@ -88,9 +88,10 @@ def radio():
 	requests.post('https://api.telegram.org/' + env.get('telegram_bot_token') + '/sendMessage', params = telegram_param)
 	sendVideo = requests.post('https://api.telegram.org/' + env.get('telegram_bot_token') + '/sendVideo', params = telegram_param_video)
 	if json.loads(sendVideo.content)['ok'] == 'false':
+		print('false')
 		file = requests.get(message)
-		open('/video.mp4','wb').write(file.content)
-		requests.post('https://api.telegram.org/' + env.get('telegram_bot_token') + '/sendMessage', params = {'chat_id': '1024110161', 'video': open('/video.mp4', 'rb')})
+		open('./video.mp4','wb').write(file.content)
+		requests.post('https://api.telegram.org/' + env.get('telegram_bot_token') + '/sendMessage', params = {'chat_id': '1024110161', 'video': open('/.video.mp4', 'rb')})
 	return name+'\n'+message
 
 app = Flask(__name__)
