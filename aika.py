@@ -1,16 +1,16 @@
 import os
 import requests
 from bs4 import BeautifulSoup
-from flask import Flask, request
+from flask import Flask, request, redirect, url_for
 import json
 
 @app.route('/1nichi1aika')
-def 1nichi1aika():
+def _1nichi1aika():
 	env=os.environ
 	my_data = {'idpwLgid': env.get('email'),  'idpwLgpw': env.get('pw'), 'mode': 'LOGIN'}
 	r = requests.post("https://fc.kobayashiaika.jp/s/n85/login",data=my_data)
 	r2 = requests.get('https://fc.kobayashiaika.jp/s/n85/lot/top_uranai', cookies=r.cookies)
-	r3 = requests.get('https://fc.kobayashiaika.jp/s/n85/diary/fc_1nichi1aika/list', cookies=r.cookies)
+	r3 = requests.get('https://fc.kobayashiaika.jp/s/n85/diary/fc__1nichi1aika/list', cookies=r.cookies)
 
 	soup_uranai = BeautifulSoup(r2.text, 'html.parser')
 	soup = BeautifulSoup(r3.text, 'html.parser')
@@ -104,7 +104,7 @@ app = Flask(__name__)
 def twitter():
 	tweet = request.args.get("tweet")
 	if "『1日1愛香』更新いたしました！" in tweet:
-		return redirect(url_for('1nichi1aika'))#1nichi1aika()
+		return redirect(url_for('_1nichi1aika'))#_1nichi1aika()
 	elif "RADIO AND 更新！" in tweet:
 		return redirect(url_for('radio'))#radio()
 
@@ -113,7 +113,7 @@ def line():
 	env=os.environ
 	my_data = {'idpwLgid': env.get('email'),  'idpwLgpw': env.get('pw'), 'mode': 'LOGIN'}
 	r = requests.post("https://fc.kobayashiaika.jp/s/n85/login",data=my_data)
-	r2 = requests.get('https://fc.kobayashiaika.jp/s/n85/diary/fc_1nichi1aika/list', cookies=r.cookies)
+	r2 = requests.get('https://fc.kobayashiaika.jp/s/n85/diary/fc__1nichi1aika/list', cookies=r.cookies)
 
 	soup = BeautifulSoup(r2.text, 'html.parser')
 
