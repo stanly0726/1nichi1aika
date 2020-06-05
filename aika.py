@@ -3,6 +3,7 @@ import requests
 from bs4 import BeautifulSoup
 from flask import Flask, request, redirect, url_for
 import json
+app = Flask(__name__)
 
 @app.route('/1nichi1aika')
 def _1nichi1aika():
@@ -98,7 +99,6 @@ def radio():
 		requests.post('https://api.telegram.org/' + env.get('telegram_bot_token') + '/sendVideo', params = {'chat_id': '1024110161'},files={'video': open('./video.mp4', 'rb')})
 	return name+'\n'+message
 
-app = Flask(__name__)
 
 @app.route('/')
 def twitter():
