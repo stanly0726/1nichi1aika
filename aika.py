@@ -9,6 +9,7 @@ app = Flask(__name__)
 def _1nichi1aika():
 	env=os.environ
 	my_data = {'idpwLgid': env.get('email'),  'idpwLgpw': env.get('pw'), 'mode': 'LOGIN'}
+	print(my_data)
 	r = requests.post("https://fc.kobayashiaika.jp/s/n85/login",data=my_data)
 	r2 = requests.get('https://fc.kobayashiaika.jp/s/n85/lot/top_uranai', cookies=r.cookies)
 	r3 = requests.get('https://fc.kobayashiaika.jp/s/n85/diary/fc__1nichi1aika/list', cookies=r.cookies)
