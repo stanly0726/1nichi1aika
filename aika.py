@@ -104,8 +104,10 @@ def radio():
 def twitter():
 	tweet = request.args.get("tweet")
 	if "『1日1愛香』更新いたしました！" in tweet:
+		print('1日')
 		redirect(url_for('_1nichi1aika'))#_1nichi1aika()
 	elif "RADIO AND 更新！" in tweet:
+		print('radio')
 		redirect(url_for('radio'))#radio()
 
 @app.route('/line')
