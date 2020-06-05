@@ -4,7 +4,8 @@ from bs4 import BeautifulSoup
 from flask import Flask, request
 import json
 
-def hello_world():
+@app.route('/1nichi1aika')
+def 1nichi1aika():
 	env=os.environ
 	my_data = {'idpwLgid': env.get('email'),  'idpwLgpw': env.get('pw'), 'mode': 'LOGIN'}
 	r = requests.post("https://fc.kobayashiaika.jp/s/n85/login",data=my_data)
@@ -60,7 +61,7 @@ def hello_world():
 		#client.send(Message(text=image), thread_id=100003783918607, thread_type=ThreadType.USER)
 
 	return date+'\n'+content+'\n'+image
-
+@app.route('/radio')
 def radio():
 	env=os.environ
 	my_data = {'idpwLgid': env.get('email'),  'idpwLgpw': env.get('pw'), 'mode': 'LOGIN'}
@@ -103,9 +104,9 @@ app = Flask(__name__)
 def twitter():
 	tweet = request.args.get("tweet")
 	if "『1日1愛香』更新いたしました！" in tweet:
-		return hello_world()
+		return redirect(url_for('1nichi1aika'))#1nichi1aika()
 	elif "RADIO AND 更新！" in tweet:
-		return radio()
+		return redirect(url_for('radio'))#radio()
 
 @app.route('/line')
 def line():
