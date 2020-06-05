@@ -16,7 +16,7 @@ def hello_world():
 
 	date = soup.find("div",class_="textBox").find_all('p')[0].string.replace(' ','').replace('\n','')
 
-	content = soup.find("div",class_="textBox").find_all('p')[1].string.replace(' ','').replace('\n','')
+	content = soup.find("div",class_="textBox").find_all('p')[1].text.replace(' ','')#.replace('\n','')
 
 	image_or_movie = soup.find("li",class_="item").find_all('div')[1].get('class')[0]
 
@@ -78,7 +78,6 @@ def radio():
 		message = j['sources'][2]['src']
 	elif len(j['sources']) == 2:
 		message = j['sources'][1]['src']
-
 	header = {'Authorization': env.get('line_notify_bearer')}
 	requests.post('https://notify-api.line.me/api/notify', headers = header, data = {'message': '\n'+name})
 	requests.post('https://notify-api.line.me/api/notify', headers = header, data = {'message': '\n'+message})
@@ -87,8 +86,15 @@ def radio():
 	telegram_param = {'chat_id': '1024110161', 'text': name}
 	telegram_param_video = {'chat_id': '1024110161', 'video': message}
 	requests.post('https://api.telegram.org/' + env.get('telegram_bot_token') + '/sendMessage', params = telegram_param)
-	requests.post('https://api.telegram.org/' + env.get('telegram_bot_token') + '/sendVideo', params = telegram_param_video)
-
+	sendVideo = requests.post('https://api.telegram.org/' + env.get('telegram_bot_token') + '/sendVideo', params = telegram_param_video)
+	print(sendVideo)
+	print(sendVideo.content)
+	print(json.loads(sendVideo.content))
+	if json.loads(sendVideo.content)['ok'] == False:
+		print('false')
+		file = requests.get(message)
+		open('./video.mp4','wb').write(file.content)
+		requests.post('https://api.telegram.org/' + env.get('telegram_bot_token') + '/sendVideo', params = {'chat_id': '1024110161'},files={'video': open('./video.mp4', 'rb')})
 	return name+'\n'+message
 
 app = Flask(__name__)
