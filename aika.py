@@ -109,7 +109,6 @@ def radio():
 		requests.post('https://api.telegram.org/' + env.get('telegram_bot_token') + '/sendVideo', params = {'chat_id': '1024110161'},files={'video': open('./video.mp4', 'rb')})
 	return name+'\n'+message
 
-
 @app.route('/')
 def twitter():
 	#取得推文
@@ -136,8 +135,6 @@ def line():
 	image = str(soup.find("li",class_="item").find('div',class_='image').img).replace('<img src="','https://fc.kobayashiaika.jp').replace('"/>','')
 
 	return date+'\n'+content+'\n'+image
-
-#@app.route('/radio')
 
 
 if __name__ == '__main__':
