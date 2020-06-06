@@ -47,8 +47,8 @@ def _1nichi1aika():
 	#傳送訊息(telegram,占卜點數 占卜語音 文字)
 	telegram_param_point = {'chat_id': '1024110161', 'text': point}
 	requests.post('https://api.telegram.org/' + env.get('telegram_bot_token') + '/sendMessage', params = telegram_param_point)
-	telegram_param_voice = {'chat_id': '1024110161', 'video': uranai_voice}
-	requests.post('https://api.telegram.org/' + env.get('telegram_bot_token') + '/sendVideo', params = telegram_param_voice)
+	telegram_param_voice = {'chat_id': '1024110161', 'voice': uranai_voice}
+	requests.post('https://api.telegram.org/' + env.get('telegram_bot_token') + '/sendVoice', params = telegram_param_voice)
 	telegram_param_content = {'chat_id': '1024110161', 'text': date+'\n'+content}
 	requests.post('https://api.telegram.org/' + env.get('telegram_bot_token') + '/sendMessage', params = telegram_param_content)
 	#client.sendRemoteFiles(uranai_gif, message=None, thread_id=100003783918607, thread_type=ThreadType.USER)
@@ -109,7 +109,6 @@ def radio():
 		requests.post('https://api.telegram.org/' + env.get('telegram_bot_token') + '/sendVideo', params = {'chat_id': '1024110161'},files={'video': open('./video.mp4', 'rb')})
 	return name+'\n'+message
 
-
 @app.route('/')
 def twitter():
 	#取得推文
@@ -136,8 +135,6 @@ def line():
 	image = str(soup.find("li",class_="item").find('div',class_='image').img).replace('<img src="','https://fc.kobayashiaika.jp').replace('"/>','')
 
 	return date+'\n'+content+'\n'+image
-
-#@app.route('/radio')
 
 
 if __name__ == '__main__':
