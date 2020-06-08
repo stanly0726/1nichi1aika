@@ -50,7 +50,7 @@ def _1nichi1aika():
 	#傳送訊息(telegram)占卜語音
 	file = requests.get(uranai_voice)
 	open('./voice.mp4','wb').write(file.content)
-	requests.post('https://api.telegram.org/' + env.get('telegram_bot_token') + '/sendVoice', params = {'chat_id': '1024110161'},files={'video': open('./voice.mp4', 'rb')})
+	requests.post('https://api.telegram.org/' + env.get('telegram_bot_token') + '/sendVoice', params = {'chat_id': '1024110161'},files={'voice': open('./voice.mp4', 'rb')})
 	#傳送訊息(telegram)文字
 	telegram_param_content = {'chat_id': '1024110161', 'text': date+'\n'+content}
 	requests.post('https://api.telegram.org/' + env.get('telegram_bot_token') + '/sendMessage', params = telegram_param_content)
