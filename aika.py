@@ -44,11 +44,14 @@ def _1nichi1aika():
 	#傳送訊息(line,占卜點數)
 	header = {'Authorization': env.get('line_notify_bearer')}
 	requests.post('https://notify-api.line.me/api/notify', headers = header, data = {'message': point})
-	#傳送訊息(telegram,占卜點數 占卜語音 文字)
+	#傳送訊息(telegram)占卜點數
 	telegram_param_point = {'chat_id': '1024110161', 'text': point}
 	requests.post('https://api.telegram.org/' + env.get('telegram_bot_token') + '/sendMessage', params = telegram_param_point)
-	telegram_param_voice = {'chat_id': '1024110161', 'voice': uranai_voice}
-	requests.post('https://api.telegram.org/' + env.get('telegram_bot_token') + '/sendVoice', params = telegram_param_voice)
+	#傳送訊息(telegram)占卜語音
+	file = requests.get(uranai_voice)
+	open('./voice.mp4','wb').write(file.content)
+	requests.post('https://api.telegram.org/' + env.get('telegram_bot_token') + '/sendVoice', params = {'chat_id': '1024110161'},files={'video': open('./voice.mp4', 'rb')})
+	#傳送訊息(telegram)文字
 	telegram_param_content = {'chat_id': '1024110161', 'text': date+'\n'+content}
 	requests.post('https://api.telegram.org/' + env.get('telegram_bot_token') + '/sendMessage', params = telegram_param_content)
 	#client.sendRemoteFiles(uranai_gif, message=None, thread_id=100003783918607, thread_type=ThreadType.USER)
