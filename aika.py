@@ -102,11 +102,10 @@ def radio():
 	telegram_param_video = {'chat_id': '1024110161', 'video': message}
 	requests.post('https://api.telegram.org/' + env.get('telegram_bot_token') + '/sendMessage', params = telegram_param)
 	sendVideo = requests.post('https://api.telegram.org/' + env.get('telegram_bot_token') + '/sendVideo', params = telegram_param_video)
-	print(sendVideo)
-	print(sendVideo.content)
 	print(json.loads(sendVideo.content))
 	if json.loads(sendVideo.content)['ok'] == False:
 		print('false')
+		print(message)
 		file = requests.get(message)
 		open('./video.mp4','wb').write(file.content)
 		requests.post('https://api.telegram.org/' + env.get('telegram_bot_token') + '/sendVideo', params = {'chat_id': '1024110161'},files={'video': open('./video.mp4', 'rb')})
