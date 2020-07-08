@@ -100,17 +100,14 @@ def radio():
 	message = message.replace('https', 'http')
 	telegram_param = {'chat_id': '1024110161', 'text': name}
 	telegram_param_video = {'chat_id': '1024110161', 'video': message}
-	requests.post('https://api.telegram.org/' + env.get('telegram_bot_token') + '/sendMessage', params = telegram_param)
+	#requests.post('https://api.telegram.org/' + env.get('telegram_bot_token') + '/sendMessage', params = telegram_param)
 	sendVideo = requests.post('https://api.telegram.org/' + env.get('telegram_bot_token') + '/sendVideo', params = telegram_param_video)
 	print(json.loads(sendVideo.content))
 	if json.loads(sendVideo.content)['ok'] == False:
-		print('false')
 		file = requests.get(message)
-		print('1')
 		open('./video.mp4','wb').write(file.content)
-		print('2')
-		requests.post('https://api.telegram.org/' + env.get('telegram_bot_token') + '/sendVideo', params = {'chat_id': '1024110161'},files={'video': open('./video.mp4', 'rb')})
-		print('3')
+		sendVideo = requests.post('https://api.telegram.org/' + env.get('telegram_bot_token') + '/sendVideo', params = {'chat_id': '1024110161'},files={'video': open('./video.mp4', 'rb')})
+		print(json.loads(sendVideo.content))
 	return name+'\n'+message
 
 @app.route('/')
