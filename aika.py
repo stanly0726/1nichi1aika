@@ -42,8 +42,8 @@ def _1nichi1aika():
 	j = json.loads(requests.get('https://edge.api.brightcove.com/playback/v1/accounts/'+account+'/videos/'+vid, headers=header).text)
 	uranai_voice = j['sources'][2]['src']
 	#傳送訊息(line,占卜點數)
-	header = {'Authorization': env.get('line_notify_bearer')}
-	requests.post('https://notify-api.line.me/api/notify', headers = header, data = {'message': point})
+	#header = {'Authorization': env.get('line_notify_bearer')}
+	#requests.post('https://notify-api.line.me/api/notify', headers = header, data = {'message': point})
 	#傳送訊息(telegram)占卜點數
 	telegram_param_point = {'chat_id': '1024110161', 'text': point}
 	requests.post('https://api.telegram.org/' + env.get('telegram_bot_token') + '/sendMessage', params = telegram_param_point)
@@ -60,15 +60,15 @@ def _1nichi1aika():
 	#根據媒體類別傳送訊息
 	if image_or_movie == 'image':
 		#line(文字 媒體)
-		requests.post('https://notify-api.line.me/api/notify', headers = header, data = {'message': '\n'+date+'\n'+content,'imageFullsize':image, 'imageThumbnail':image})
-		image = image.replace('https', 'http')
+		#requests.post('https://notify-api.line.me/api/notify', headers = header, data = {'message': '\n'+date+'\n'+content,'imageFullsize':image, 'imageThumbnail':image})
+		#image = image.replace('https', 'http')
 		#telegram(媒體)
 		telegram_param_photo = {'chat_id': '1024110161', 'photo': image}
 		requests.post('https://api.telegram.org/' + env.get('telegram_bot_token') + '/sendPhoto', params = telegram_param_photo)
 	elif image_or_movie == 'movie':
 		#line(文字 媒體)
-		requests.post('https://notify-api.line.me/api/notify', headers = header, data = {'message': date+'\n'+content})
-		requests.post('https://notify-api.line.me/api/notify', headers = header, data = {'message':image})
+		#requests.post('https://notify-api.line.me/api/notify', headers = header, data = {'message': date+'\n'+content})
+		#requests.post('https://notify-api.line.me/api/notify', headers = header, data = {'message':image})
 		#telegram(媒體)
 		image = image.replace('https', 'http')
 		telegram_param_video = {'chat_id': '1024110161', 'video': image}
@@ -94,8 +94,8 @@ def radio():
 	elif len(j['sources']) == 2:
 		message = j['sources'][1]['src']
 	header = {'Authorization': env.get('line_notify_bearer')}
-	requests.post('https://notify-api.line.me/api/notify', headers = header, data = {'message': '\n'+name})
-	requests.post('https://notify-api.line.me/api/notify', headers = header, data = {'message': '\n'+message})
+	#requests.post('https://notify-api.line.me/api/notify', headers = header, data = {'message': '\n'+name})
+	#requests.post('https://notify-api.line.me/api/notify', headers = header, data = {'message': '\n'+message})
 
 	message = message.replace('https', 'http')
 	telegram_param = {'chat_id': '1024110161', 'text': name}
