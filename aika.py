@@ -3,6 +3,7 @@ import requests
 from bs4 import BeautifulSoup
 from flask import Flask, request, redirect, url_for
 import json
+from datetime import date
 app = Flask(__name__)
 
 @app.route('/1nichi1aika')
@@ -41,6 +42,19 @@ def _1nichi1aika():
 	header = {'Accept': 'application/json;pk=BCpkADawqM3T47dRzTl5mbQrsSen6Irw0V0_IJkbfWomd5pq9d-QFF9qEEqIx8riJ1F93W8T74JPmcI3J_Mb1vRFbx3kjvIVhoJnjaSu9J3z7FhaSSgoChrjoZu63Wf_q3j4XfYoi5dJOZKr'}
 	j = json.loads(requests.get('https://edge.api.brightcove.com/playback/v1/accounts/'+account+'/videos/'+vid, headers=header).text)
 	uranai_voice = j['sources'][2]['src']
+
+	#gif部分
+	#每月重置
+	if date.today().day = 1:
+		open('gif_record.txt', 'w').write('')
+	#檢查該月以傳送過的占卜gif
+	gif_record = open('gif record.txt', 'r').read()
+	today_point = point[0]
+	if today_point not in gif_record:
+		telegram_param_gif = {'chat_id': '1024110161', 'photo': uranai_gif}
+		requests.post('https://api.telegram.org/' + env.get('telegram_bot_token') + '/sendPhoto', params = telegram_param_gif)
+		open('gif record.txt', 'a').write(today_point)
+
 	#傳送訊息(line,占卜點數)
 	#header = {'Authorization': env.get('line_notify_bearer')}
 	#requests.post('https://notify-api.line.me/api/notify', headers = header, data = {'message': point})
@@ -57,7 +71,7 @@ def _1nichi1aika():
 	#client.sendRemoteFiles(uranai_gif, message=None, thread_id=100003783918607, thread_type=ThreadType.USER)
 	#requests.post('https://notify-api.line.me/api/notify', headers = header, data = {'message': date+'\n'+content})
 
-	#根據媒體類別傳送訊息
+	#傳送照片或影片
 	if image_or_movie == 'image':
 		#line(文字 媒體)
 		#requests.post('https://notify-api.line.me/api/notify', headers = header, data = {'message': '\n'+date+'\n'+content,'imageFullsize':image, 'imageThumbnail':image})
