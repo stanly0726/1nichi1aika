@@ -42,7 +42,7 @@ def _1nichi1aika():
 	header = {'Accept': 'application/json;pk=BCpkADawqM3T47dRzTl5mbQrsSen6Irw0V0_IJkbfWomd5pq9d-QFF9qEEqIx8riJ1F93W8T74JPmcI3J_Mb1vRFbx3kjvIVhoJnjaSu9J3z7FhaSSgoChrjoZu63Wf_q3j4XfYoi5dJOZKr'}
 	j = json.loads(requests.get('https://edge.api.brightcove.com/playback/v1/accounts/'+account+'/videos/'+vid, headers=header).text)
 	uranai_voice = j['sources'][2]['src']
-	print(date)
+	print(date.day)
 	#gif部分
 	#每月重置
 	if date.today().day == 1:
