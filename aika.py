@@ -42,19 +42,6 @@ def _1nichi1aika():
 	header = {'Accept': 'application/json;pk=BCpkADawqM3T47dRzTl5mbQrsSen6Irw0V0_IJkbfWomd5pq9d-QFF9qEEqIx8riJ1F93W8T74JPmcI3J_Mb1vRFbx3kjvIVhoJnjaSu9J3z7FhaSSgoChrjoZu63Wf_q3j4XfYoi5dJOZKr'}
 	j = json.loads(requests.get('https://edge.api.brightcove.com/playback/v1/accounts/'+account+'/videos/'+vid, headers=header).text)
 	uranai_voice = j['sources'][2]['src']
-	print(datetime.date.today().day)
-
-	#gif部分
-	#每月重置
-	if datetime.date.today().day == 1:
-		open('gif_record.txt', 'w').write('')
-	#檢查該月以傳送過的占卜gif
-	gif_record = open('gif record.txt', 'r').read()
-	today_point = point[0]
-	if today_point not in gif_record:
-		telegram_param_gif = {'chat_id': '1024110161', 'photo': uranai_gif}
-		requests.post('https://api.telegram.org/' + env.get('telegram_bot_token') + '/sendPhoto', params = telegram_param_gif)
-		open('gif record.txt', 'a').write(today_point)
 
 	#傳送訊息(line,占卜點數)
 	#header = {'Authorization': env.get('line_notify_bearer')}
@@ -66,6 +53,20 @@ def _1nichi1aika():
 	file = requests.get(uranai_voice)
 	open('./voice.mp4','wb').write(file.content)
 	requests.post('https://api.telegram.org/' + env.get('telegram_bot_token') + '/sendVoice', params = {'chat_id': '1024110161'},files={'voice': open('./voice.mp4', 'rb')})
+
+	#gif部分
+	#每月重置
+	if datetime.date.today().day == 1:
+		open('gif_record.txt', 'w').write('')
+	#檢查該月以傳送過的占卜gif
+	gif_record = open('gif record.txt', 'r').read()
+	today_point = point[0]
+	print(today_point)
+	if today_point not in gif_record:
+		telegram_param_gif = {'chat_id': '1024110161', 'animation': uranai_gif}
+		requests.post('https://api.telegram.org/' + env.get('telegram_bot_token') + '/sendAnimation', params = telegram_param_gif)
+		open('gif record.txt', 'a').write(today_point)
+
 	#傳送訊息(telegram)文字
 	telegram_param_content = {'chat_id': '1024110161', 'text': date+'\n'+content}
 	requests.post('https://api.telegram.org/' + env.get('telegram_bot_token') + '/sendMessage', params = telegram_param_content)
