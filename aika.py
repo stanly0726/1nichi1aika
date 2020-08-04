@@ -45,7 +45,7 @@ def _1nichi1aika():
 
 	#gif部分
 	#每月重置
-	if date.today().day = 1:
+	if date.today().day == 1:
 		open('gif_record.txt', 'w').write('')
 	#檢查該月以傳送過的占卜gif
 	gif_record = open('gif record.txt', 'r').read()
