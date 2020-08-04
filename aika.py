@@ -61,11 +61,13 @@ def _1nichi1aika():
 	#檢查該月以傳送過的占卜gif
 	gif_record = open('gif record.txt', 'r').read()
 	today_point = point[0]
+	print(gif_record)
 	print(today_point)
 	if today_point not in gif_record:
 		telegram_param_gif = {'chat_id': '1024110161', 'animation': uranai_gif}
 		requests.post('https://api.telegram.org/' + env.get('telegram_bot_token') + '/sendAnimation', params = telegram_param_gif)
 		open('gif record.txt', 'a').write(today_point)
+		print(open('gif record.txt', 'r').read())
 
 	#傳送訊息(telegram)文字
 	telegram_param_content = {'chat_id': '1024110161', 'text': date+'\n'+content}
