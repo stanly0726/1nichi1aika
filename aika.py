@@ -52,8 +52,9 @@ def _1nichi1aika():
 	#傳送訊息(telegram)占卜語音
 	file = requests.get(uranai_voice)
 	open('./voice.mp4','wb').write(file.content)
-	requests.post('https://api.telegram.org/' + env.get('telegram_bot_token') + '/sendVoice', params = {'chat_id': '1024110161'},files={'voice': open('./voice.mp4', 'rb')})
+	requests.post('https://api.telegram.org/' + env.get('telegram_bot_token') + '/sendVoice', params = {'chat_id': '1024110161'}, files = {'voice': open('./voice.mp4', 'rb')})
 
+	'''
 	#gif部分
 	#每月重置
 	if datetime.date.today().day == 1:
@@ -61,13 +62,16 @@ def _1nichi1aika():
 	#檢查該月以傳送過的占卜gif
 	gif_record = open('gif record.txt', 'r').read()
 	today_point = point[0]
-	print(gif_record)
-	print(today_point)
 	if today_point not in gif_record:
 		telegram_param_gif = {'chat_id': '1024110161', 'animation': uranai_gif}
 		requests.post('https://api.telegram.org/' + env.get('telegram_bot_token') + '/sendAnimation', params = telegram_param_gif)
 		open('gif record.txt', 'a').write(today_point)
 		print(open('gif record.txt', 'r').read())
+	'''
+	r = requests.get(uranai_gif)
+	open('uranai.gif', 'wb').write(r.content)
+	telegram_param_gif = {'chat_id': '1024110161'}
+	requests.post('https://api.telegram.org/' + env.get('telegram_bot_token') + '/sendAnimation', params = telegram_param_gif, files = {'animation': open('uranai.gif', 'rb')})
 
 	#傳送訊息(telegram)文字
 	telegram_param_content = {'chat_id': '1024110161', 'text': date+'\n'+content}
@@ -93,6 +97,7 @@ def _1nichi1aika():
 		requests.post('https://api.telegram.org/' + env.get('telegram_bot_token') + '/sendVideo', params = telegram_param_video)
 	#返回結果(網頁)
 	return date+'\n'+content+'\n'+image
+
 @app.route('/radio')
 def radio():
 	env=os.environ
@@ -138,6 +143,8 @@ def twitter():
 		return redirect(url_for('_1nichi1aika'))
 	elif "RADIO AND 更新！" in tweet:
 		return redirect(url_for('radio'))
+	else:
+		return 'skip'
 
 @app.route('/line')
 def line():
