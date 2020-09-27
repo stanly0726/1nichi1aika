@@ -68,6 +68,7 @@ def _1nichi1aika():
 		open('gif record.txt', 'a').write(today_point)
 		print(open('gif record.txt', 'r').read())
 	'''
+	
 	r = requests.get(uranai_gif)
 	open('uranai.gif', 'wb').write(r.content)
 	telegram_param_gif = {'chat_id': '1024110161'}
