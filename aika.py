@@ -9,7 +9,7 @@ app = Flask(__name__)
 @app.route('/1nichi1aika')
 def _1nichi1aika():
 	env=os.environ
-	#設定club帳密 
+	#設定club帳密
 	my_data = {'idpwLgid': env.get('email'),  'idpwLgpw': env.get('pw'), 'mode': 'LOGIN'}
 	#發出requests
 	s = requests.session()
