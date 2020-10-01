@@ -14,8 +14,8 @@ def _1nichi1aika():
 	#發出requests
 	s = requests.session()
 	r = s.post("https://fc.kobayashiaika.jp/s/n85/login",data=my_data)
-	r2 = s.get('https://fc.kobayashiaika.jp/s/n85/lot/top_uranai', cookies=r.cookies)
-	r3 = s.get('https://fc.kobayashiaika.jp/s/n85/diary/fc_1nichi1aika/list', cookies=r.cookies)
+	r2 = s.get('https://fc.kobayashiaika.jp/s/n85/lot/top_uranai')
+	r3 = s.get('https://fc.kobayashiaika.jp/s/n85/diary/fc_1nichi1aika/list')
 	#用bs處理網頁
 	soup_uranai = BeautifulSoup(r2.text, 'html.parser')
 	soup = BeautifulSoup(r3.text, 'html.parser')
@@ -106,7 +106,7 @@ def radio():
 	my_data = {'idpwLgid': env.get('email'),  'idpwLgpw': env.get('pw'), 'mode': 'LOGIN'}
 	s = requests.Session()
 	r = s.post("https://fc.kobayashiaika.jp/s/n85/login",data=my_data)
-	r2 = s.get('https://fc.kobayashiaika.jp/s/n85/diary/fc_radioand/list', cookies=r.cookies)
+	r2 = s.get('https://fc.kobayashiaika.jp/s/n85/diary/fc_radioand/list')
 
 	soup = BeautifulSoup(r2.text, 'html.parser')
 	object_ = soup.find('ul', class_='radioList').find_all('li')[0]
@@ -155,7 +155,7 @@ def line():
 	my_data = {'idpwLgid': env.get('email'),  'idpwLgpw': env.get('pw'), 'mode': 'LOGIN'}
 	s = requests.session()
 	r = s.post("https://fc.kobayashiaika.jp/s/n85/login",data=my_data)
-	r2 = s.get('https://fc.kobayashiaika.jp/s/n85/diary/fc_1nichi1aika/list', cookies=r.cookies)
+	r2 = s.get('https://fc.kobayashiaika.jp/s/n85/diary/fc_1nichi1aika/list')
 
 	soup = BeautifulSoup(r2.text, 'html.parser')
 
