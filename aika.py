@@ -12,9 +12,10 @@ def _1nichi1aika():
 	#設定club帳密
 	my_data = {'idpwLgid': env.get('email'),  'idpwLgpw': env.get('pw'), 'mode': 'LOGIN'}
 	#發出requests
-	r = requests.post("https://fc.kobayashiaika.jp/s/n85/login",data=my_data)
-	r2 = requests.get('https://fc.kobayashiaika.jp/s/n85/lot/top_uranai', cookies=r.cookies)
-	r3 = requests.get('https://fc.kobayashiaika.jp/s/n85/diary/fc_1nichi1aika/list', cookies=r.cookies)
+	s = requests.session()
+	r = s.post("https://fc.kobayashiaika.jp/s/n85/login",data=my_data)
+	r2 = s.get('https://fc.kobayashiaika.jp/s/n85/lot/top_uranai', cookies=r.cookies)
+	r3 = s.get('https://fc.kobayashiaika.jp/s/n85/diary/fc_1nichi1aika/list', cookies=r.cookies)
 	#用bs處理網頁
 	soup_uranai = BeautifulSoup(r2.text, 'html.parser')
 	soup = BeautifulSoup(r3.text, 'html.parser')
@@ -103,8 +104,9 @@ def _1nichi1aika():
 def radio():
 	env=os.environ
 	my_data = {'idpwLgid': env.get('email'),  'idpwLgpw': env.get('pw'), 'mode': 'LOGIN'}
-	r = requests.post("https://fc.kobayashiaika.jp/s/n85/login",data=my_data)
-	r2 = requests.get('https://fc.kobayashiaika.jp/s/n85/diary/fc_radioand/list', cookies=r.cookies)
+	s = requests.Session()
+	r = s.post("https://fc.kobayashiaika.jp/s/n85/login",data=my_data)
+	r2 = s.get('https://fc.kobayashiaika.jp/s/n85/diary/fc_radioand/list', cookies=r.cookies)
 
 	soup = BeautifulSoup(r2.text, 'html.parser')
 	object_ = soup.find('ul', class_='radioList').find_all('li')[0]
@@ -151,8 +153,9 @@ def twitter():
 def line():
 	env=os.environ
 	my_data = {'idpwLgid': env.get('email'),  'idpwLgpw': env.get('pw'), 'mode': 'LOGIN'}
-	r = requests.post("https://fc.kobayashiaika.jp/s/n85/login",data=my_data)
-	r2 = requests.get('https://fc.kobayashiaika.jp/s/n85/diary/fc_1nichi1aika/list', cookies=r.cookies)
+	s = requests.session()
+	r = s.post("https://fc.kobayashiaika.jp/s/n85/login",data=my_data)
+	r2 = s.get('https://fc.kobayashiaika.jp/s/n85/diary/fc_1nichi1aika/list', cookies=r.cookies)
 
 	soup = BeautifulSoup(r2.text, 'html.parser')
 
