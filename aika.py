@@ -13,12 +13,12 @@ def _1nichi1aika():
 	my_data = {'idpwLgid': env.get('email'),  'idpwLgpw': env.get('pw'), 'mode': 'LOGIN'}
 	#發出requests
 	s = requests.session()
-	r = s.post("https://fc.kobayashiaika.jp/s/n85/login",data=my_data)
-	r2 = s.get('https://fc.kobayashiaika.jp/s/n85/lot/top_uranai')
-	r3 = s.get('https://fc.kobayashiaika.jp/s/n85/diary/fc_1nichi1aika/list')
+	s.post("https://fc.kobayashiaika.jp/s/n85/login",data=my_data)
+	r = s.get('https://fc.kobayashiaika.jp/s/n85/lot/top_uranai')
+	r2 = s.get('https://fc.kobayashiaika.jp/s/n85/diary/fc_1nichi1aika/list')
 	#用bs處理網頁
-	soup_uranai = BeautifulSoup(r2.text, 'html.parser')
-	soup = BeautifulSoup(r3.text, 'html.parser')
+	soup_uranai = BeautifulSoup(r.text, 'html.parser')
+	soup = BeautifulSoup(r2.text, 'html.parser')
 	#取得日期
 	date = soup.find("div",class_="textBox").find_all('p')[0].string.replace(' ','').replace('\n','')
 	#取得文字內容
@@ -105,10 +105,10 @@ def radio():
 	env=os.environ
 	my_data = {'idpwLgid': env.get('email'),  'idpwLgpw': env.get('pw'), 'mode': 'LOGIN'}
 	s = requests.Session()
-	r = s.post("https://fc.kobayashiaika.jp/s/n85/login",data=my_data)
-	r2 = s.get('https://fc.kobayashiaika.jp/s/n85/diary/fc_radioand/list')
+	s.post("https://fc.kobayashiaika.jp/s/n85/login",data=my_data)
+	r = s.get('https://fc.kobayashiaika.jp/s/n85/diary/fc_radioand/list')
 
-	soup = BeautifulSoup(r2.text, 'html.parser')
+	soup = BeautifulSoup(r.text, 'html.parser')
 	object_ = soup.find('ul', class_='radioList').find_all('li')[0]
 	account = object_.find('video')['data-account']
 	vid = object_.find('video')['data-video-id']
@@ -116,7 +116,7 @@ def radio():
 	header = {'Accept': 'application/json;pk=BCpkADawqM3T47dRzTl5mbQrsSen6Irw0V0_IJkbfWomd5pq9d-QFF9qEEqIx8riJ1F93W8T74JPmcI3J_Mb1vRFbx3kjvIVhoJnjaSu9J3z7FhaSSgoChrjoZu63Wf_q3j4XfYoi5dJOZKr'}
 	j = json.loads(requests.get('https://edge.api.brightcove.com/playback/v1/accounts/'+account+'/videos/'+vid, headers=header).text)
 	if len(j['sources']) == 8:
-		message = j['sources'][2]['src']
+		message = j['sources'][5]['src']
 	elif len(j['sources']) == 2:
 		message = j['sources'][1]['src']
 	header = {'Authorization': env.get('line_notify_bearer')}
@@ -154,10 +154,10 @@ def line():
 	env=os.environ
 	my_data = {'idpwLgid': env.get('email'),  'idpwLgpw': env.get('pw'), 'mode': 'LOGIN'}
 	s = requests.session()
-	r = s.post("https://fc.kobayashiaika.jp/s/n85/login",data=my_data)
-	r2 = s.get('https://fc.kobayashiaika.jp/s/n85/diary/fc_1nichi1aika/list')
+	s.post("https://fc.kobayashiaika.jp/s/n85/login",data=my_data)
+	r = s.get('https://fc.kobayashiaika.jp/s/n85/diary/fc_1nichi1aika/list')
 
-	soup = BeautifulSoup(r2.text, 'html.parser')
+	soup = BeautifulSoup(r.text, 'html.parser')
 
 	date = soup.find("div",class_="textBox").find_all('p')[0].string.replace(' ','').replace('\n','')
 
