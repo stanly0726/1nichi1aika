@@ -133,9 +133,17 @@ def radio():
 	sendVideo = requests.post('https://api.telegram.org/' + env.get('telegram_bot_token') + '/sendVideo', params = {'chat_id': '1024110161', 'width': width, 'height': height},files={'video': open('./video.mp4', 'rb')})
 	try:
 		if json.loads(sendVideo.content)['description'] == 'Request Entity Too Large':
-			size = str(round(os.stat('./video.mp4').st_size/(1024*1024),2))+'MB'
-			requests.post('https://api.telegram.org/' + env.get('telegram_bot_token') + '/sendMessage', params = {'chat_id': '1024110161', 'text': size})
-			requests.post('https://api.telegram.org/' + env.get('telegram_bot_token') + '/sendMessage', params = {'chat_id': '1024110161', 'text': message})
+			message = j['sources'][4]['src']
+			file = requests.get(message)
+			open('./video.mp4','wb').write(file.content)
+			sendVideo = requests.post('https://api.telegram.org/' + env.get('telegram_bot_token') + '/sendVideo', params = {'chat_id': '1024110161', 'width': width, 'height': height},files={'video': open('./video.mp4', 'rb')})
+			try:
+				if json.loads(sendVideo.content)['description'] == 'Request Entity Too Large':
+					size = str(round(os.stat('./video.mp4').st_size/(1024*1024),2))+'MB'
+					requests.post('https://api.telegram.org/' + env.get('telegram_bot_token') + '/sendMessage', params = {'chat_id': '1024110161', 'text': size})
+					requests.post('https://api.telegram.org/' + env.get('telegram_bot_token') + '/sendMessage', params = {'chat_id': '1024110161', 'text': message})
+			except KeyError:
+				pass
 	except KeyError:
 		pass
 	return name+'\n'+message
