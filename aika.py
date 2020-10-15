@@ -116,20 +116,21 @@ def radio():
 	header = {'Accept': 'application/json;pk=BCpkADawqM3T47dRzTl5mbQrsSen6Irw0V0_IJkbfWomd5pq9d-QFF9qEEqIx8riJ1F93W8T74JPmcI3J_Mb1vRFbx3kjvIVhoJnjaSu9J3z7FhaSSgoChrjoZu63Wf_q3j4XfYoi5dJOZKr'}
 	j = json.loads(requests.get('https://edge.api.brightcove.com/playback/v1/accounts/'+account+'/videos/'+vid, headers=header).text)
 	if len(j['sources']) == 8:
-		message = j['sources'][5]['src']
-	elif len(j['sources']) == 2:
 		message = j['sources'][1]['src']
+		width = j['sources'][1]['width']
+		height = j['sources'][1]['height']
+	# elif len(j['sources']) == 2:
+	# 	message = j['sources'][1]['src']
 	header = {'Authorization': env.get('line_notify_bearer')}
 	#requests.post('https://notify-api.line.me/api/notify', headers = header, data = {'message': '\n'+name})
 	#requests.post('https://notify-api.line.me/api/notify', headers = header, data = {'message': '\n'+message})
 
-	message = message.replace('https', 'http')
 	telegram_param = {'chat_id': '1024110161', 'text': name}
 	requests.post('https://api.telegram.org/' + env.get('telegram_bot_token') + '/sendMessage', params = telegram_param)
 
 	file = requests.get(message)
 	open('./video.mp4','wb').write(file.content)
-	sendVideo = requests.post('https://api.telegram.org/' + env.get('telegram_bot_token') + '/sendVideo', params = {'chat_id': '1024110161'},files={'video': open('./video.mp4', 'rb')})
+	sendVideo = requests.post('https://api.telegram.org/' + env.get('telegram_bot_token') + '/sendVideo', params = {'chat_id': '1024110161', 'width': width, 'height': height},files={'video': open('./video.mp4', 'rb')})
 	try:
 		if json.loads(sendVideo.content)['description'] == 'Request Entity Too Large':
 			size = str(round(os.stat('./video.mp4').st_size/(1024*1024),2))+'MB'
