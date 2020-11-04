@@ -4,6 +4,7 @@ from bs4 import BeautifulSoup
 from flask import Flask, request, redirect, url_for
 import json
 import datetime
+import re
 app = Flask(__name__)
 
 @app.route('/1nichi1aika')
@@ -94,7 +95,7 @@ def _1nichi1aika():
 		#requests.post('https://notify-api.line.me/api/notify', headers = header, data = {'message': date+'\n'+content})
 		#requests.post('https://notify-api.line.me/api/notify', headers = header, data = {'message':image})
 		#telegram(媒體)
-		image = image.replace('https', 'http')
+		image = re.sub(r'\?pubId=\d*&videoId=\d*','',image)
 		telegram_param_video = {'chat_id': '1024110161', 'video': image}
 		requests.post('https://api.telegram.org/' + env.get('telegram_bot_token') + '/sendVideo', params = telegram_param_video)
 	#返回結果(網頁)
