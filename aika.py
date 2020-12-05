@@ -6,10 +6,10 @@ import json
 import datetime
 import re
 app = Flask(__name__)
+env=os.environ
 
 @app.route('/1nichi1aika')
 def _1nichi1aika():
-	env=os.environ
 	#設定club帳密
 	my_data = {'idpwLgid': env.get('email'),  'idpwLgpw': env.get('pw'), 'mode': 'LOGIN'}
 	#發出requests
@@ -56,21 +56,21 @@ def _1nichi1aika():
 	open('./voice.mp4','wb').write(file.content)
 	requests.post('https://api.telegram.org/' + env.get('telegram_bot_token') + '/sendVoice', params = {'chat_id': '1024110161'}, files = {'voice': open('./voice.mp4', 'rb')})
 
-	'''
-	#gif部分
-	#每月重置
-	if datetime.date.today().day == 1:
-		open('gif_record.txt', 'w').write('')
-	#檢查該月以傳送過的占卜gif
-	gif_record = open('gif record.txt', 'r').read()
-	today_point = point[0]
-	if today_point not in gif_record:
-		telegram_param_gif = {'chat_id': '1024110161', 'animation': uranai_gif}
-		requests.post('https://api.telegram.org/' + env.get('telegram_bot_token') + '/sendAnimation', params = telegram_param_gif)
-		open('gif record.txt', 'a').write(today_point)
-		print(open('gif record.txt', 'r').read())
-	'''
 	
+	#gif部分
+
+	# #每月重置
+	# if datetime.date.today().day == 1:
+	# 	open('gif_record.txt', 'w').write('')
+	# #檢查該月以傳送過的占卜gif
+	# gif_record = open('gif record.txt', 'r').read()
+	# today_point = point[0]
+	# if today_point not in gif_record:
+	# 	telegram_param_gif = {'chat_id': '1024110161', 'animation': uranai_gif}
+	# 	requests.post('https://api.telegram.org/' + env.get('telegram_bot_token') + '/sendAnimation', params = telegram_param_gif)
+	# 	open('gif record.txt', 'a').write(today_point)
+	# 	print(open('gif record.txt', 'r').read())
+
 	r = requests.get(uranai_gif)
 	open('uranai.gif', 'wb').write(r.content)
 	telegram_param_gif = {'chat_id': '1024110161'}
@@ -103,7 +103,6 @@ def _1nichi1aika():
 
 @app.route('/radio')
 def radio():
-	env=os.environ
 	my_data = {'idpwLgid': env.get('email'),  'idpwLgpw': env.get('pw'), 'mode': 'LOGIN'}
 	s = requests.Session()
 	s.post("https://fc.kobayashiaika.jp/s/n85/login",data=my_data)
@@ -159,7 +158,8 @@ def twitter():
 	elif "RADIO AND 更新！" in tweet:
 		return redirect(url_for('radio'))
 	else:
-		return 'skip'
+		requests.post('https://api.telegram.org/' + env.get('telegram_bot_token') + '/sendMessage', params = {'chat_id': '1024110161', 'text': tweet})
+		return 'ok'
 
 @app.route('/line')
 def line():
