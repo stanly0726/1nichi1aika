@@ -158,7 +158,7 @@ def twitter():
 	elif "RADIO AND 更新！" in tweet:
 		return redirect(url_for('radio'))
 	else:
-		requests.post('https://api.telegram.org/' + env.get('telegram_bot_token') + '/sendMessage', params = {'chat_id': '1024110161', 'text': tweet})
+		requests.post('https://api.telegram.org/' + env.get('telegram_bot_token_tweet') + '/sendMessage', params = {'chat_id': '1024110161', 'text': tweet})
 		return 'ok'
 
 @app.route('/line')
